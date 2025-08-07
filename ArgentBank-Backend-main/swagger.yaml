@@ -146,18 +146,7 @@ paths:
         '200':
           description: Liste paginée de transactions
           schema:
-            type: object
-            properties:
-              transactions:
-                type: array
-                items:
-                  $ref: '#/definitions/Transaction'
-              page:
-                type: integer
-              pageSize:
-                type: integer
-              total:
-                type: integer
+            $ref: '#/definitions/TransactionListResponse'
         '400':
           description: Paramètres invalides
         '401':
@@ -196,11 +185,12 @@ paths:
         '500':
           description: Erreur interne
 
-    put:
+  /transactions/{transactionId}/note:
+    patch:
       tags:
         - Transactions
-      summary: Mettre à jour une transaction
-      description: Met à jour la catégorie et/ou la note d’une transaction
+      summary: Modifier la note d’une transaction
+      description: Met à jour uniquement la note d’une transaction existante
       security:
         - Bearer: []
       consumes:
@@ -214,16 +204,85 @@ paths:
           name: update
           required: true
           schema:
-            $ref: '#/definitions/TransactionUpdate'
+            type: object
+            properties:
+              note:
+                type: string
       produces:
         - application/json
       responses:
         '200':
-          description: Transaction mise à jour avec succès
+          description: Note mise à jour avec succès
           schema:
             $ref: '#/definitions/TransactionDetail'
         '400':
           description: Données invalides
+        '401':
+          description: Non authentifié
+        '404':
+          description: Transaction introuvable
+        '500':
+          description: Erreur interne
+
+  /transactions/{transactionId}/category:
+    patch:
+      tags:
+        - Transactions
+      summary: Modifier la catégorie d’une transaction
+      description: Met à jour uniquement la catégorie d’une transaction existante
+      security:
+        - Bearer: []
+      consumes:
+        - application/json
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          type: string
+        - in: body
+          name: update
+          required: true
+          schema:
+            type: object
+            properties:
+              category:
+                type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Catégorie mise à jour avec succès
+          schema:
+            $ref: '#/definitions/TransactionDetail'
+        '400':
+          description: Données invalides
+        '401':
+          description: Non authentifié
+        '404':
+          description: Transaction introuvable
+        '500':
+          description: Erreur interne
+
+  /transactions/{transactionId}/delete:
+    patch:
+      tags:
+        - Transactions
+      summary: Supprimer une transaction
+      description: Marque une transaction comme supprimée
+      security:
+        - Bearer: []
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Transaction supprimée avec succès
+        '400':
+          description: Requête invalide
         '401':
           description: Non authentifié
         '404':
@@ -310,9 +369,16 @@ definitions:
           merchant:
             type: string
 
-  TransactionUpdate:
+  TransactionListResponse:
     type: object
     properties:
-      category:
-        type: string
-      note:
+      transactions:
+        type: array
+        items:
+          $ref: '#/definitions/Transaction'
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      total:
+        type: integer
