@@ -175,7 +175,7 @@ paths:
         '200':
           description: Détail de la transaction
           schema:
-            $ref: '#/definitions/TransactionDetail'
+            $ref: '#/definitions/Transaction'
         '400':
           description: Paramètres invalides
         '401':
@@ -214,7 +214,7 @@ paths:
         '200':
           description: Note mise à jour avec succès
           schema:
-            $ref: '#/definitions/TransactionDetail'
+            $ref: '#/definitions/TransactionWithNote'
         '400':
           description: Données invalides
         '401':
@@ -253,36 +253,9 @@ paths:
         '200':
           description: Catégorie mise à jour avec succès
           schema:
-            $ref: '#/definitions/TransactionDetail'
+            $ref: '#/definitions/TransactionWithCategory'
         '400':
           description: Données invalides
-        '401':
-          description: Non authentifié
-        '404':
-          description: Transaction introuvable
-        '500':
-          description: Erreur interne
-
-  /transactions/{transactionId}/delete:
-    patch:
-      tags:
-        - Transactions
-      summary: Supprimer une transaction
-      description: Marque une transaction comme supprimée
-      security:
-        - Bearer: []
-      parameters:
-        - name: transactionId
-          in: path
-          required: true
-          type: string
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: Transaction supprimée avec succès
-        '400':
-          description: Requête invalide
         '401':
           description: Non authentifié
         '404':
@@ -342,6 +315,7 @@ definitions:
 
   Transaction:
     type: object
+    description: Transaction allégée
     properties:
       id:
         type: string
@@ -352,21 +326,21 @@ definitions:
         type: string
       amount:
         type: number
-      balance:
-        type: number
-      category:
-        type: string
-      note:
-        type: string
 
-  TransactionDetail:
+  TransactionWithNote:
     allOf:
       - $ref: '#/definitions/Transaction'
       - type: object
         properties:
-          type:
+          note:
             type: string
-          merchant:
+
+  TransactionWithCategory:
+    allOf:
+      - $ref: '#/definitions/Transaction'
+      - type: object
+        properties:
+          category:
             type: string
 
   TransactionListResponse:
