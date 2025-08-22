@@ -175,7 +175,7 @@ paths:
         '200':
           description: Détail de la transaction
           schema:
-            $ref: '#/definitions/Transaction'
+            $ref: '#/definitions/TransactionDetail'
         '400':
           description: Paramètres invalides
         '401':
@@ -205,6 +205,7 @@ paths:
           required: true
           schema:
             type: object
+            required: [note]
             properties:
               note:
                 type: string
@@ -214,7 +215,7 @@ paths:
         '200':
           description: Note mise à jour avec succès
           schema:
-            $ref: '#/definitions/TransactionWithNote'
+            $ref: '#/definitions/TransactionDetail'
         '400':
           description: Données invalides
         '401':
@@ -244,6 +245,7 @@ paths:
           required: true
           schema:
             type: object
+            required: [category]
             properties:
               category:
                 type: string
@@ -253,7 +255,7 @@ paths:
         '200':
           description: Catégorie mise à jour avec succès
           schema:
-            $ref: '#/definitions/TransactionWithCategory'
+            $ref: '#/definitions/TransactionDetail'
         '400':
           description: Données invalides
         '401':
@@ -313,9 +315,9 @@ definitions:
       userName:
         type: string
 
-  Transaction:
+  TransactionSummary:
     type: object
-    description: Transaction allégée
+    description: Transaction résumée 
     properties:
       id:
         type: string
@@ -327,21 +329,23 @@ definitions:
       amount:
         type: number
 
-  TransactionWithNote:
-    allOf:
-      - $ref: '#/definitions/Transaction'
-      - type: object
-        properties:
-          note:
-            type: string
-
-  TransactionWithCategory:
-    allOf:
-      - $ref: '#/definitions/Transaction'
-      - type: object
-        properties:
-          category:
-            type: string
+  TransactionDetail:
+    type: object
+    description: Transaction détaillée 
+    properties:
+      id:
+        type: string
+      date:
+        type: string
+        format: date
+      description:
+        type: string
+      amount:
+        type: number
+      category:
+        type: string
+      note:
+        type: string
 
   TransactionListResponse:
     type: object
@@ -349,10 +353,13 @@ definitions:
       transactions:
         type: array
         items:
-          $ref: '#/definitions/Transaction'
+          $ref: '#/definitions/TransactionSummary'
       page:
         type: integer
       pageSize:
         type: integer
       total:
         type: integer
+      balance:
+        type: number
+        description: Solde actuel du compte
