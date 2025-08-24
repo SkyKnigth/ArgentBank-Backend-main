@@ -328,6 +328,10 @@ definitions:
         type: string
       amount:
         type: number
+      balance:
+        type: number
+        format: double
+        description: Solde du compte après cette transaction
 
   TransactionDetail:
     type: object
@@ -342,6 +346,14 @@ definitions:
         type: string
       amount:
         type: number
+      balance:
+        type: number
+        format: double
+        description: Solde du compte après cette transaction
+      type:
+        type: string
+        enum: [credit, debit]
+        description: Type de transaction 
       category:
         type: string
       note:
